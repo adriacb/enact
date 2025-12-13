@@ -1,7 +1,7 @@
 import yaml
 import json
 import os
-from typing import List, Union
+
 from ..core.policies import Rule, RuleBasedPolicy
 from ..core.domain import Policy
 

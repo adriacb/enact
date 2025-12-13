@@ -18,6 +18,7 @@ uv.lock
 # cached files
 .pytest_cache
 .ipynb_checkpoints
+.ruff_cache
 
 # jupyter notebooks
 *.ipynb

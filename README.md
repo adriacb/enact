@@ -8,6 +8,7 @@ Enact is a lightweight governance layer for AI Agents. It intercepts tool execut
 2.  **Immutable Agents**: Wraps tools *before* they reach the agent. No code changes to the agent class.
 3.  **Unified Governance**: Supports both local Python objects and [Model Context Protocol (MCP)](https://modelcontextprotocol.io) tools.
 4.  **Configurable**: Define policies in Python or via YAML/JSON.
+5.  **Audit Logging**: Track all governance decisions with built-in JSON logging.
 
 ## Installation
 
@@ -85,6 +86,35 @@ rules:
     action: "deny"
     reason: "Implicit deny"
 ```
+
+### 4. Audit Logging
+
+Track all governance decisions for compliance and observability.
+
+```python
+from enact import govern, PolicyLoader, JsonLineAuditor, GovernanceEngine
+
+# Create auditor
+auditor = JsonLineAuditor("audit.jsonl")
+
+# Create engine with policy and auditor
+policy = PolicyLoader.load("policy.yaml")
+engine = GovernanceEngine(policy=policy, auditors=[auditor])
+
+# Use with govern (note: currently you need to pass engine separately)
+# All decisions are logged to audit.jsonl
+```
+
+**Log Format:**
+```json
+{"timestamp": "2025-12-13T22:50:00Z", "agent_id": "agent1", "tool": "db", "function": "query", "allow": true, "reason": "Allowed", "duration_ms": 0.5}
+```
+
+## Examples
+
+Check out [docs/examples/](docs/examples/) for:
+- **[readonly_policy.yaml](docs/examples/readonly_policy.yaml)** - Example read-only database policy
+- **[basic_usage.py](docs/examples/basic_usage.py)** - Complete usage example with audit logging
 
 ## Documentation
 - [Writing Custom Policies](docs/guides/custom_policies.md)

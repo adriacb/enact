@@ -1,0 +1,43 @@
+# Read-Only Database Policy
+# This policy allows only SELECT queries and blocks all write operations
+
+default_allow: false
+
+rules:
+  # Allow read operations
+  - tool: "database"
+    function: "select.*"
+    action: "allow"
+    reason: "Read operations permitted"
+  
+  - tool: "database"
+    function: "query"
+    action: "allow"
+    reason: "Generic query allowed (inspect arguments for safety)"
+  
+  # Block write operations
+  - tool: "database"
+    function: "insert.*"
+    action: "deny"
+    reason: "Write operations forbidden"
+  
+  - tool: "database"
+    function: "update.*"
+    action: "deny"
+    reason: "Write operations forbidden"
+  
+  - tool: "database"
+    function: "delete.*"
+    action: "deny"
+    reason: "Write operations forbidden"
+  
+  - tool: "database"
+    function: "drop.*"
+    action: "deny"
+    reason: "Destructive operations forbidden"
+  
+  # Default deny for everything else
+  - tool: "*"
+    function: "*"
+    action: "deny"
+    reason: "Default deny - not explicitly allowed"
