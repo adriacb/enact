@@ -4,6 +4,7 @@ from .core.policies import Rule, RuleBasedPolicy
 from .core.audit import Auditor, AuditLog, JsonLineAuditor, HTTPAuditor, SyslogAuditor, CloudWatchAuditor
 from .core.interactors import GovernanceEngine
 from .config.loader import PolicyLoader
+from .registry import ToolRegistry, InMemoryToolRegistry
 
 __all__ = [
     "govern",
@@ -21,4 +22,6 @@ __all__ = [
     "CloudWatchAuditor",
     "GovernanceEngine",
     "PolicyLoader",
+    "ToolRegistry",
+    "InMemoryToolRegistry",
 ]
