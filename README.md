@@ -105,6 +105,43 @@ engine = GovernanceEngine(policy=policy, auditors=[auditor])
 # All decisions are logged to audit.jsonl
 ```
 
+**Remote Logging with HTTPAuditor:**
+```python
+from enact import HTTPAuditor
+
+# Send logs to external service
+http_auditor = HTTPAuditor(
+    url="https://your-logging-service.com/api/logs",
+    headers={"Authorization": "Bearer YOUR_TOKEN"},
+    timeout=5
+)
+
+engine = GovernanceEngine(policy=policy, auditors=[http_auditor])
+```
+
+**Syslog Integration:**
+```python
+from enact import SyslogAuditor
+
+syslog_auditor = SyslogAuditor(
+    host='syslog.example.com',
+    port=514,
+    facility=16  # local0
+)
+```
+
+**AWS CloudWatch Logs:**
+```python
+from enact import CloudWatchAuditor
+
+# Requires: pip install enact[cloud]
+cloudwatch_auditor = CloudWatchAuditor(
+    log_group='/enact/governance',
+    log_stream='production',
+    region='us-east-1'
+)
+```
+
 **Log Format:**
 ```json
 {"timestamp": "2025-12-13T22:50:00Z", "agent_id": "agent1", "tool": "db", "function": "query", "allow": true, "reason": "Allowed", "duration_ms": 0.5}
