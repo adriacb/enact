@@ -1,0 +1,21 @@
+[project]
+name = "enact"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Adrià Cabello", email = "acabellob@caixabanktech.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "mcp[cli]>=1.24.0",
+    "pytest[dev]>=9.0.2",
+    "pytest-asyncio>=0.23.0",
+]
+
+[project.scripts]
+enact = "enact:main"
+
+[build-system]
+requires = ["uv_build>=0.9.10,<0.10.0"]
+build-backend = "uv_build"
