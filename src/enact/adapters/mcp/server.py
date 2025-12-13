@@ -1,7 +1,6 @@
-import asyncio
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 from mcp.server import Server
-from mcp.types import Tool, CallToolRequest, CallToolResult, TextContent
+from mcp.types import Tool, TextContent
 
 from ...core.interactors import GovernanceEngine
 from ...core.domain import GovernanceRequest
