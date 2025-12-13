@@ -14,3 +14,11 @@ wheels/
 .vscode
 
 uv.lock
+
+# cached files
+.pytest_cache
+.ipynb_checkpoints
+
+# jupyter notebooks
+*.ipynb
+

@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches: [development, main]
+  pull_request:
+    branches: [development, main]
+
+permissions:
+  contents: read
+
+jobs:
+  # -------------------------
+  # LINT JOB (development only)
+  # -------------------------
+  lint:
+    if: github.ref_name == 'development'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          version: "0.8.24"
+          enable-cache: true
+
+      - name: Sync dev dependencies (CPU only)
+        run: uv sync --extra dev
+
+      - name: Run Ruff
+        run: uv run ruff check src
+
+  # -------------------------
+  # TEST JOB (all branches)
+  # -------------------------
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          version: "0.8.24"
+          enable-cache: true
+
+      - name: Check uv version
+        run: uv --version
+
+      - name: List repo contents (debug)
+        run: ls -l
+
+      # Runtime + dev dependencies for tests
+      - name: Sync all needed dependencies
+        run: |
+          uv sync --extra dev --extra mcp
+
+      # Install project
+      - name: Install project
+        run: uv pip install -e .
+
+      # Run tests
+      - name: Run tests
+        working-directory: ${{ github.workspace }}
+        run: |
+          uv run pytest ./tests -q --maxfail=1 \
+            --cov=src \
+            --cov-report=xml:coverage.xml
+
+      # Upload coverage report only on development
+      - name: Upload coverage report
+        if: github.ref_name == 'development'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-xml
+          path: coverage.xml
