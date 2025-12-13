@@ -147,6 +147,38 @@ cloudwatch_auditor = CloudWatchAuditor(
 {"timestamp": "2025-12-13T22:50:00Z", "agent_id": "agent1", "tool": "db", "function": "query", "allow": true, "reason": "Allowed", "duration_ms": 0.5}
 ```
 
+### 5. Tool Registry
+
+Centralized management of tools with agent groups and policy inheritance.
+
+```python
+from enact import InMemoryToolRegistry
+
+# Create registry
+registry = InMemoryToolRegistry()
+
+# Register tools with access control
+registry.register_tool("admin_db", admin_db, allowed_agents=["admin"])
+registry.register_tool("public_api", api_tool)  # No restrictions
+
+# Create agent groups
+registry.create_group("developers", policy=dev_policy)
+registry.add_agent_to_group("alice", "developers")
+registry.add_agent_to_group("bob", "developers")
+
+# Register tools for groups
+registry.register_tool("dev_db", dev_db, allowed_groups=["developers"])
+
+# Get tool for agent (with access check)
+tool = registry.get_tool("dev_db", "alice")  # Returns tool
+tool = registry.get_tool("admin_db", "alice")  # Returns None
+
+# List accessible tools
+tools = registry.list_tools_for_agent("alice")  # ["public_api", "dev_db"]
+```
+
+**Policy Inheritance:** tool-specific → agent-specific → group policy
+
 ## Examples
 
 Check out [docs/examples/](docs/examples/) for:
@@ -155,6 +187,8 @@ Check out [docs/examples/](docs/examples/) for:
 
 ## Documentation
 - [Writing Custom Policies](docs/guides/custom_policies.md)
+- [Tool Registry Guide](docs/guides/tool_registry.md)
+- [Audit Logging Guide](docs/guides/audit_logging.md)
 - [Architecture Concept](docs/concept.md)
 
 ## Architecture
