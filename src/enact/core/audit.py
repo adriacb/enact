@@ -1,6 +1,6 @@
 from dataclasses import dataclass, asdict
 from datetime import datetime
-from typing import Protocol, Any, Dict
+from typing import Protocol, Any, Dict, Optional
 import json
 
 @dataclass
@@ -14,6 +14,7 @@ class AuditLog:
     allow: bool
     reason: str
     duration_ms: float
+    correlation_id: Optional[str] = None
 
 class Auditor(Protocol):
     """Protocol for audit loggers."""

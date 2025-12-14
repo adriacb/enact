@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from datetime import datetime
 from typing import Dict, List, Optional, Any, Set, Protocol
 from ..core.domain import Policy
 
@@ -17,6 +18,8 @@ class ToolRegistration:
     policy: Optional[Policy] = None
     allowed_agents: Set[str] = field(default_factory=set)
     allowed_groups: Set[str] = field(default_factory=set)
+    expires_at: Optional[datetime] = None
+    version: str = "1.0.0"
 
 class ToolRegistry(Protocol):
     """
@@ -52,7 +55,11 @@ class ToolRegistry(Protocol):
         ...
     
     def get_tool(self, name: str, agent_id: str) -> Optional[Any]:
-        """Get a tool if the agent has access to it."""
+        """Get the default (latest) tool if the agent has access to it."""
+        ...
+
+    def get_tool_version(self, name: str, version: str, agent_id: str) -> Optional[Any]:
+        """Get a specific version of a tool."""
         ...
     
     def get_policy_for_tool(self, tool_name: str, agent_id: str) -> Optional[Policy]:
@@ -76,6 +83,7 @@ class InMemoryToolRegistry:
     
     def __init__(self):
         self.tools: Dict[str, ToolRegistration] = {}
+        self.versions: Dict[str, Dict[str, ToolRegistration]] = {}
         self.groups: Dict[str, AgentGroup] = {}
         self.agent_policies: Dict[str, Policy] = {}
     
@@ -85,7 +93,9 @@ class InMemoryToolRegistry:
         tool: Any,
         policy: Optional[Policy] = None,
         allowed_agents: Optional[List[str]] = None,
-        allowed_groups: Optional[List[str]] = None
+        allowed_groups: Optional[List[str]] = None,
+        expires_at: Optional[datetime] = None,
+        version: str = "1.0.0"
     ) -> None:
         """
         Register a tool in the registry.
@@ -96,14 +106,22 @@ class InMemoryToolRegistry:
             policy: Tool-specific policy (highest priority)
             allowed_agents: List of agent IDs that can access this tool
             allowed_groups: List of group names that can access this tool
+            expires_at: Optional expiration time for this registration
         """
-        self.tools[name] = ToolRegistration(
+        registration = ToolRegistration(
             name=name,
             tool=tool,
             policy=policy,
             allowed_agents=set(allowed_agents or []),
-            allowed_groups=set(allowed_groups or [])
+            allowed_groups=set(allowed_groups or []),
+            expires_at=expires_at,
+            version=version
         )
+        self.tools[name] = registration
+        
+        if name not in self.versions:
+            self.versions[name] = {}
+        self.versions[name][version] = registration
     
     def unregister_tool(self, name: str) -> None:
         """Remove a tool from the registry."""
@@ -131,20 +149,22 @@ class InMemoryToolRegistry:
         self.agent_policies[agent_id] = policy
     
     def get_tool(self, name: str, agent_id: str) -> Optional[Any]:
-        """
-        Get a tool if the agent has access to it.
-        
-        Args:
-            name: Tool name
-            agent_id: Agent requesting the tool
-            
-        Returns:
-            The tool object if accessible, None otherwise
-        """
+        """Get the default (latest) tool."""
         if name not in self.tools:
             return None
-        
-        registration = self.tools[name]
+        return self._check_access(self.tools[name], agent_id)
+
+    def get_tool_version(self, name: str, version: str, agent_id: str) -> Optional[Any]:
+        """Get a specific version of a tool."""
+        if name not in self.versions or version not in self.versions[name]:
+            return None
+        return self._check_access(self.versions[name][version], agent_id)
+
+    def _check_access(self, registration: ToolRegistration, agent_id: str) -> Optional[Any]:
+        """Internal helper to check access for a registration."""
+        # Check expiration
+        if registration.expires_at and datetime.now() > registration.expires_at:
+            return None
         
         # If no restrictions, allow access
         if not registration.allowed_agents and not registration.allowed_groups:
