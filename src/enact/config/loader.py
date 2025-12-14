@@ -49,7 +49,8 @@ class PolicyLoader:
                 tool=r.get("tool", "*"),
                 function=r.get("function", "*"),
                 action=r.get("action", "deny"),
-                reason=r.get("reason", "No reason provided")
+                reason=r.get("reason", "No reason provided"),
+                agent_id=r.get("agent_id", "*")
             ))
             
         default_allow = data.get("default_allow", False)

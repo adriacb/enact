@@ -1,4 +1,5 @@
 from .main import govern
+from .context import governance_context
 from .core.domain import Policy, AllowAllPolicy, GovernanceRequest, GovernanceDecision
 from .core.policies import Rule, RuleBasedPolicy
 from .policies import TemporalPolicy, TimeWindow
@@ -17,6 +18,7 @@ from .validation import JustificationValidator, SchemaValidator
 
 __all__ = [
     "govern",
+    "governance_context",
     "Policy",
     "AllowAllPolicy",
     "GovernanceRequest",

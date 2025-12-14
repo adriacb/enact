@@ -91,6 +91,10 @@ class KillSwitch:
             "reason": self._reason
         }
     
+    @property
+    def reason(self) -> Optional[str]:
+        return self._reason
+
     def reset(self):
         """Reset kill-switch state (for testing)."""
         with self._lock:

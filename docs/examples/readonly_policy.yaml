@@ -5,33 +5,33 @@ default_allow: false
 
 rules:
   # Allow read operations
-  - tool: "database"
+  - tool: "DatabaseTool"
     function: "select.*"
     action: "allow"
     reason: "Read operations permitted"
   
-  - tool: "database"
+  - tool: "DatabaseTool"
     function: "query"
     action: "allow"
     reason: "Generic query allowed (inspect arguments for safety)"
   
   # Block write operations
-  - tool: "database"
+  - tool: "DatabaseTool"
     function: "insert.*"
     action: "deny"
     reason: "Write operations forbidden"
   
-  - tool: "database"
+  - tool: "DatabaseTool"
     function: "update.*"
     action: "deny"
     reason: "Write operations forbidden"
   
-  - tool: "database"
+  - tool: "DatabaseTool"
     function: "delete.*"
     action: "deny"
     reason: "Write operations forbidden"
   
-  - tool: "database"
+  - tool: "DatabaseTool"
     function: "drop.*"
     action: "deny"
     reason: "Destructive operations forbidden"

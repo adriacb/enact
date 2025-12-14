@@ -29,9 +29,9 @@ def main():
     # - Allow health_check for everyone
     # - Allow db_tool only for 'admin' user
     policy = RuleBasedPolicy(rules=[
-        Rule("allow_public", "allow", "tool == 'health_check'"),
-        Rule("admin_db_access", "allow", "tool == 'db_tool' and agent_id == 'admin'"),
-        Rule("deny_others", "deny", "True") # Default deny
+        Rule(tool="health_check", function="*", action="allow", reason="Public health check"),
+        Rule(tool="db_tool", function="*", action="allow", reason="Admin Access", agent_id="admin"),
+        Rule(tool=".*", function=".*", action="deny", reason="Default deny") 
     ])
 
     # 3. Setup Engine

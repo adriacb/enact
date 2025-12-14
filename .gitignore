@@ -19,8 +19,12 @@ uv.lock
 .pytest_cache
 .ipynb_checkpoints
 .ruff_cache
+.coverage
+.coverage.*
 
 # jupyter notebooks
 *.ipynb
 
 .github/
+
+*.jsonl

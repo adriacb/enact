@@ -31,8 +31,8 @@ class GovernedAgent:
         # Policy: Allow emails, block deletions
         self.engine = GovernanceEngine(
             policy=RuleBasedPolicy(rules=[
-                Rule("allow_email", "allow", "tool == 'send_email'"),
-                Rule("deny_delete", "deny", "tool == 'delete_file'")
+                Rule(tool="send_email", function="*", action="allow", reason="Email allowed"),
+                Rule(tool="delete_file", function="*", action="deny", reason="File deletion denied")
             ]),
             auditors=[JsonLineAuditor("agent_audit.jsonl")]
         )

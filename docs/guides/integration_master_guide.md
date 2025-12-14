@@ -182,13 +182,17 @@ class Agent:
 For tighter integration, you can use Enact's wrappers to automatically handle the governance check during the function call.
 
 ```python
-from enact import govern
+```python
+from enact import govern, governance_context
 
 # Decorate a function to be governed automatically
-@govern(engine, agent_id="agent-1")
+# You can reuse the 'engine' created above
+@govern(engine=engine, agent_id="agent-1")
 def risky_action(param):
     print(f"Doing {param}")
 
-# Calling this will trigger the engine.evaluate() internally
-# risky_action("something")
+# Call with context
+with governance_context(justification="Testing wrapper"):
+    # Only executes if engine allows it
+    risky_action("something")
 ```
