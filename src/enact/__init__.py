@@ -5,6 +5,8 @@ from .core.audit import Auditor, AuditLog, JsonLineAuditor, HTTPAuditor, SyslogA
 from .core.interactors import GovernanceEngine
 from .config.loader import PolicyLoader
 from .registry import ToolRegistry, InMemoryToolRegistry
+from .safety import RateLimiter, QuotaManager, QuotaConfig, DryRunProxy
+from .reliability import CircuitBreaker, CircuitState, CircuitBreakerOpen, ReliableToolProxy, RetryConfig
 
 __all__ = [
     "govern",
@@ -24,4 +26,13 @@ __all__ = [
     "PolicyLoader",
     "ToolRegistry",
     "InMemoryToolRegistry",
+    "RateLimiter",
+    "QuotaManager",
+    "QuotaConfig",
+    "DryRunProxy",
+    "CircuitBreaker",
+    "CircuitState",
+    "CircuitBreakerOpen",
+    "ReliableToolProxy",
+    "RetryConfig",
 ]

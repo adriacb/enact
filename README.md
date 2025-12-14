@@ -189,6 +189,7 @@ Check out [docs/examples/](docs/examples/) for:
 - [Writing Custom Policies](docs/guides/custom_policies.md)
 - [Tool Registry Guide](docs/guides/tool_registry.md)
 - [Audit Logging Guide](docs/guides/audit_logging.md)
+- [Safety & Reliability Guide](docs/guides/safety_reliability.md)
 - [Architecture Concept](docs/concept.md)
 
 ## Architecture
