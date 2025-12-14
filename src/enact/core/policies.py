@@ -18,6 +18,7 @@ class Rule:
     function: str
     action: str  # "allow" | "deny"
     reason: str
+    agent_id: str = "*" # Default to match all agents
 
 class RuleBasedPolicy(Policy):
     """
@@ -65,6 +66,14 @@ class RuleBasedPolicy(Policy):
             
         # Check Function Name
         if not re.fullmatch(function_pattern, request.function_name):
+            return False
+
+        # Check Agent ID
+        agent_pattern = rule.agent_id
+        if agent_pattern == "*":
+            agent_pattern = ".*"
+            
+        if not re.fullmatch(agent_pattern, request.agent_id):
             return False
 
         return True

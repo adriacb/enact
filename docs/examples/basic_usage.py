@@ -32,10 +32,10 @@ def main():
     
     # 3. Create governance engine
     engine = GovernanceEngine(policy=policy, auditors=[auditor])
-    
+
     # 4. Create and govern the tool
     db = DatabaseTool()
-    governed_db = govern(db, policy=policy)
+    governed_db = govern(db, engine=engine)
     
     # 5. Try operations
     print("Attempting SELECT (should succeed):")

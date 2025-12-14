@@ -211,3 +211,16 @@ class ApprovalWorkflow:
     def clear_pending(self):
         """Clear all pending requests (use with caution)."""
         self.pending.clear()
+
+    def is_approved(self, agent_id: str, tool_name: str, function_name: str, arguments: Dict) -> bool:
+        """Check if a matching request has been approved."""
+        # Check history for approved requests with matching parameters
+        # In a real system, you might want to expire approvals or check timestamps
+        for req in self.history:
+            if (req.status == ApprovalStatus.APPROVED and
+                req.agent_id == agent_id and
+                req.tool_name == tool_name and
+                req.function_name == function_name and
+                req.arguments == arguments):
+                return True
+        return False

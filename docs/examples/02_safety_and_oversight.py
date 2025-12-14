@@ -22,10 +22,10 @@ def main():
     # 1. Configure Oversight Components
     
     # Simple rate limiter: 2 requests per minute
-    rate_limiter = RateLimiter(max_requests=2, window_seconds=60)
+    rate_limiter = RateLimiter(max_calls_per_minute=2)
     
     # Approval workflow for "deploy" actions
-    approval = ApprovalWorkflow()
+    approval = ApprovalWorkflow(high_risk_tools={"deploy"})
     
     # Global Kill Switch
     kill_switch = KillSwitch()
@@ -56,7 +56,10 @@ def main():
     
     # Mock Human Approval
     print("  [Human Operator]: Approving request...")
-    approval.approve(d1.reason.split("ID: ")[1].strip()) # Extract ID from reason string
+    approval.approve(
+        request_id=d1.reason.split("ID: ")[1].strip(), 
+        approver="admin"
+    )
     
     # Second attempt - should pass
     d2 = engine.evaluate(deploy_req)
@@ -65,7 +68,7 @@ def main():
     # --- Scenario 3: Kill Switch ---
     print("\n--- Scenario 3: Emergency Kill Switch ---")
     print("  [System]: Activating Kill Switch!")
-    kill_switch.activate("Security Breach Detected")
+    kill_switch.activate(activated_by="System", reason="Security Breach Detected")
     
     decision_k = engine.evaluate(req)
     print(f"Request: Allowed={decision_k.allow} ({decision_k.reason})")

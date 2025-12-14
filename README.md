@@ -27,10 +27,6 @@ Wrap your existing tool classes seamlessly.
 ```python
 from enact import govern, Policy, GovernanceRequest, GovernanceDecision
 
-class DatabaseTool:
-    def delete_table(self, name):
-        print(f"Deleting {name}...")
-
 # Define a simple policy
 class SafeMode(Policy):
     def evaluate(self, request: GovernanceRequest) -> GovernanceDecision:
@@ -38,12 +34,13 @@ class SafeMode(Policy):
             return GovernanceDecision(allow=False, reason="Safety violation")
         return GovernanceDecision(allow=True, reason="Allowed")
 
-# Governance happens here
-db = DatabaseTool()
-safe_db = govern(db, SafeMode())
+# Wrap your tools
+@govern(policy=SafeMode())
+def delete_table(name):
+    print(f"Deleting {name}...")
 
-# Agent uses safe_db as if it were the original
-safe_db.delete_table("users")  # Raises PermissionError
+# Usage triggers governance
+delete_table("users")  # Raises PermissionError
 ```
 
 ### 2. Governance Middleware for MCP
@@ -101,7 +98,8 @@ auditor = JsonLineAuditor("audit.jsonl")
 policy = PolicyLoader.load("policy.yaml")
 engine = GovernanceEngine(policy=policy, auditors=[auditor])
 
-# Use with govern (note: currently you need to pass engine separately)
+# Use with govern
+governed_tool = govern(my_tool, engine=engine)
 # All decisions are logged to audit.jsonl
 ```
 
@@ -147,7 +145,19 @@ cloudwatch_auditor = CloudWatchAuditor(
 {"timestamp": "2025-12-13T22:50:00Z", "agent_id": "agent1", "tool": "db", "function": "query", "allow": true, "reason": "Allowed", "duration_ms": 0.5}
 ```
 
-### 5. Tool Registry
+### 5. Context & Justifications
+
+Pass metadata like agent reasoning without changing function signatures.
+
+```python
+from enact import governance_context
+
+with governance_context(justification="User explicitly requested deletion"):
+    # This info is passed to validators and audit logs
+    delete_table("users")
+```
+
+### 6. Tool Registry
 
 Centralized management of tools with agent groups and policy inheritance.
 
