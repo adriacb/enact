@@ -192,6 +192,9 @@ Check out [docs/examples/](docs/examples/) for:
 - [Safety & Reliability Guide](docs/guides/safety_reliability.md)
 - [Human Oversight Guide](docs/guides/human_oversight.md)
 - [Intent Validation Guide](docs/guides/intent_validation.md)
+- [Advanced Features Guide](docs/guides/advanced_features.md)
+- [Continuous Evaluation Guide](docs/guides/continuous_evaluation.md)
+- [Integration Master Guide](docs/guides/integration_master_guide.md)
 - [Architecture Concept](docs/concept.md)
 
 ## Architecture
