@@ -10,6 +10,7 @@ from .safety import RateLimiter, QuotaManager, QuotaConfig, DryRunProxy
 from .reliability import CircuitBreaker, CircuitState, CircuitBreakerOpen, ReliableToolProxy, RetryConfig
 from .oversight import ApprovalWorkflow, KillSwitch, ConfidenceEscalation, EscalationLevel
 from .integrations import OPAPolicy
+from .lifecycle import ToolLifecycleManager, VersionInfo
 from .evaluation import UsageTracker, AnomalyDetector, RedTeamSimulator, RedTeamScenario, AttackResult
 from .core.intent import ToolIntent, ValidationResult, ValidationPipeline
 from .validation import JustificationValidator, SchemaValidator
@@ -58,4 +59,6 @@ __all__ = [
     "RedTeamSimulator",
     "RedTeamScenario",
     "AttackResult",
+    "ToolLifecycleManager",
+    "VersionInfo",
 ]
