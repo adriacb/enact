@@ -7,6 +7,9 @@ from .config.loader import PolicyLoader
 from .registry import ToolRegistry, InMemoryToolRegistry
 from .safety import RateLimiter, QuotaManager, QuotaConfig, DryRunProxy
 from .reliability import CircuitBreaker, CircuitState, CircuitBreakerOpen, ReliableToolProxy, RetryConfig
+from .oversight import ApprovalWorkflow, KillSwitch, ConfidenceEscalation, EscalationLevel
+from .core.intent import ToolIntent, ValidationResult, ValidationPipeline
+from .validation import JustificationValidator, SchemaValidator
 
 __all__ = [
     "govern",
@@ -35,4 +38,13 @@ __all__ = [
     "CircuitBreakerOpen",
     "ReliableToolProxy",
     "RetryConfig",
+    "ApprovalWorkflow",
+    "KillSwitch",
+    "ConfidenceEscalation",
+    "EscalationLevel",
+    "ToolIntent",
+    "ValidationResult",
+    "ValidationPipeline",
+    "JustificationValidator",
+    "SchemaValidator",
 ]

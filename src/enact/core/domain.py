@@ -8,6 +8,7 @@ class GovernanceRequest:
     tool_name: str
     function_name: str
     arguments: Dict[str, Any]
+    context: Optional[Dict[str, Any]] = None
 
 @dataclass
 class GovernanceDecision:
