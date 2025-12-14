@@ -22,7 +22,7 @@ class MaxRetriesExceeded(Exception):
 
 def with_timeout(timeout_seconds: float):
     """
-    Decorator to add timeout to a function.
+    Decorator to add timeout to a function using threading.
     
     Args:
         timeout_seconds: Maximum execution time
@@ -30,23 +30,36 @@ def with_timeout(timeout_seconds: float):
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            import signal
+            import threading
             
-            def timeout_handler(signum, frame):
+            # Mutable container for result/exception
+            result = []
+            
+            def target():
+                try:
+                    val = func(*args, **kwargs)
+                    result.append((True, val))
+                except Exception as e:
+                    result.append((False, e))
+            
+            t = threading.Thread(target=target)
+            t.daemon = True
+            t.start()
+            t.join(timeout_seconds)
+            
+            if t.is_alive():
                 raise TimeoutError(f"Operation timed out after {timeout_seconds}s")
             
-            # Set the signal handler
-            old_handler = signal.signal(signal.SIGALRM, timeout_handler)
-            signal.alarm(int(timeout_seconds))
+            if not result:
+                # Should trigger if join returned but thread hasn't finished (rare race)
+                # or if thread died silently
+                raise TimeoutError("Operation timed out or failed silently")
+                
+            success, value = result[0]
+            if not success:
+                raise value
             
-            try:
-                result = func(*args, **kwargs)
-            finally:
-                # Restore old handler and cancel alarm
-                signal.alarm(0)
-                signal.signal(signal.SIGALRM, old_handler)
-            
-            return result
+            return value
         return wrapper
     return decorator
 

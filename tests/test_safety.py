@@ -2,7 +2,7 @@ import pytest
 import time
 from datetime import datetime, timedelta
 from enact.safety import RateLimiter, QuotaManager, QuotaConfig, DryRunProxy
-from enact.reliability import CircuitBreaker, CircuitState, CircuitBreakerOpen
+from enact.reliability import CircuitBreaker, CircuitState, CircuitBreakerOpen, CircuitBreakerConfig
 
 # Rate Limiter Tests
 def test_rate_limiter_allows_within_limit():

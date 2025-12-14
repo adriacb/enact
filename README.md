@@ -190,6 +190,8 @@ Check out [docs/examples/](docs/examples/) for:
 - [Tool Registry Guide](docs/guides/tool_registry.md)
 - [Audit Logging Guide](docs/guides/audit_logging.md)
 - [Safety & Reliability Guide](docs/guides/safety_reliability.md)
+- [Human Oversight Guide](docs/guides/human_oversight.md)
+- [Intent Validation Guide](docs/guides/intent_validation.md)
 - [Architecture Concept](docs/concept.md)
 
 ## Architecture
