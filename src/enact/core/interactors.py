@@ -72,7 +72,8 @@ class GovernanceEngine:
             arguments=request.arguments,
             allow=decision.allow,
             reason=decision.reason,
-            duration_ms=duration_ms
+            duration_ms=duration_ms,
+            correlation_id=request.correlation_id
         )
         
         for auditor in self.auditors:

@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from datetime import datetime
 from typing import Dict, List, Optional, Any, Set, Protocol
 from ..core.domain import Policy
 
@@ -17,6 +18,7 @@ class ToolRegistration:
     policy: Optional[Policy] = None
     allowed_agents: Set[str] = field(default_factory=set)
     allowed_groups: Set[str] = field(default_factory=set)
+    expires_at: Optional[datetime] = None
 
 class ToolRegistry(Protocol):
     """
@@ -85,7 +87,8 @@ class InMemoryToolRegistry:
         tool: Any,
         policy: Optional[Policy] = None,
         allowed_agents: Optional[List[str]] = None,
-        allowed_groups: Optional[List[str]] = None
+        allowed_groups: Optional[List[str]] = None,
+        expires_at: Optional[datetime] = None
     ) -> None:
         """
         Register a tool in the registry.
@@ -96,13 +99,15 @@ class InMemoryToolRegistry:
             policy: Tool-specific policy (highest priority)
             allowed_agents: List of agent IDs that can access this tool
             allowed_groups: List of group names that can access this tool
+            expires_at: Optional expiration time for this registration
         """
         self.tools[name] = ToolRegistration(
             name=name,
             tool=tool,
             policy=policy,
             allowed_agents=set(allowed_agents or []),
-            allowed_groups=set(allowed_groups or [])
+            allowed_groups=set(allowed_groups or []),
+            expires_at=expires_at
         )
     
     def unregister_tool(self, name: str) -> None:
@@ -145,6 +150,10 @@ class InMemoryToolRegistry:
             return None
         
         registration = self.tools[name]
+        
+        # Check expiration
+        if registration.expires_at and datetime.now() > registration.expires_at:
+            return None
         
         # If no restrictions, allow access
         if not registration.allowed_agents and not registration.allowed_groups:
